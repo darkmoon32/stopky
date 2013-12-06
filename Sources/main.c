@@ -26,7 +26,7 @@ void stopkyFunction(char stream);
  
 
 //global variables
-unsigned long time = 0;
+unsigned long time = 124142;
 unsigned char mezicas = 0, stop = 0,tlac;
 
 void main(void) {
@@ -154,9 +154,21 @@ void stopkyFunction(char stream)
     }
 }
 
-void intToTime(unsigned long, char *){
-
-
+void intToTime(unsigned long t, char * string){
+  int i = 0, divide = 0, pozice = 0;
+  long divider = 360000;
+  while(i++ < 4){
+    divide = t / divider;
+    t -= divide * divider;
+    string[pozice++] = divide / 10 + '0';
+    string[pozice++] = divide % 10 + '0';
+    if(i < 3)
+      string[pozice++] = ':';
+    else if(i == 3)
+      string[pozice++] = ',';
+    divider /= 60;
+  }
+  string[pozice] = '\0';
 }
 
 void counter(void)
@@ -166,8 +178,10 @@ void counter(void)
 
 void keyboard(void)
 {
+  char string[25];
     while(1)
     {   __RESET_WATCHDOG();
+    intToTime(time,string);
         if(KeyPressed != 0xff && KeyPressed != tlac && KeyPressed > 9)
         {
             tlac = KeyPressed;

@@ -13,11 +13,13 @@ Linker      : SmartLinker V-5.0.37 Build 9279, Oct  7 2009
 FILE SECTION
 ---------------------------------------------------------------------------------------------
 gpio.c.o                                Model: SMALL,         Lang: ANSI-C
+sci_gb60.asm.o                          Model: SMALL,         Lang: Assembler
 keyboard.asm.o                          Model: SMALL,         Lang: Assembler
 display.asm.o                           Model: SMALL,         Lang: Assembler
 main.c.o                                Model: SMALL,         Lang: ANSI-C
 main.asm.o                              Model: SMALL,         Lang: Assembler
 RTSHC08.C.o (ansifs.lib)                Model: SMALL,         Lang: ANSI-C
+STRING.C.o (ansifs.lib)                 Model: SMALL,         Lang: ANSI-C
 MC9S08GB60A.C.o                         Model: SMALL,         Lang: ANSI-C
 Start08.c.o                             Model: SMALL,         Lang: ANSI-C
 C:\Documents and Settings\dolinay\Dokumenty\Mikropocitace\Freescale\rtmon_hc08\rtmon_lib\rtmon_lib_Data\Standard\ObjectCode\rtmon_08c.c.o (rtmon_5ms.lib)Model: SMALL,         Lang: ANSI-C
@@ -29,22 +31,24 @@ STARTUP SECTION
 Entry point: 0x18A7 (_Startup)
 _startupData is allocated at 0x18B0 and uses 6 Bytes
 extern struct _tagStartup {
-  unsigned nofZeroOut     2
-  _Range   pZeroOut       0x100     13
-                          0x180     1310
-  _Copy    *toCopyDownBeg 0x2581
+  unsigned nofZeroOut     3
+  _Range   pZeroOut       0x80     13
+                          0x100     4
+                          0x184     1306
+  _Copy    *toCopyDownBeg 0x2B9E
 } _startupData;
 
 *********************************************************************************************
 SECTION-ALLOCATION SECTION
 Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
-.stack                           128   R/W      0x100      0x17F   RAM
+.data                              4   R/W      0x100      0x103   RAM
+.stack                           128   R/W      0x104      0x183   RAM
 .init                            132     R     0x182C     0x18AF   ROM
 .startData                        18     R     0x18B0     0x18C1   ROM
-.rodata1                          36     R     0x18C2     0x18E5   ROM
-.text                           2399     R     0x18E6     0x2244   ROM
-.copy                              2     R     0x2581     0x2582   ROM
+.rodata1                          86     R     0x18C2     0x1917   ROM
+.text                           3779     R     0x1918     0x27DA   ROM
+.copy                              9     R     0x2B9E     0x2BA6   ROM
 MY_ZEROPAGE                       13   R/W       0x80       0x8C   Z_RAM
 keyboard.asm__ORG00001             2     R     0xFFD2     0xFFD3   .absSeg0
 display.asm__ORG00001              2     R     0xFFE2     0xFFE3   .absSeg1
@@ -157,13 +161,13 @@ display.asm__ORG00001              2     R     0xFFE2     0xFFE3   .absSeg1
 .abs_section_1806                  2   N/I     0x1806     0x1807   .absSeg217
 .abs_section_1814                  2   N/I     0x1814     0x1815   .absSeg218
 rtmon_5ms_rtmon_asm.asm__ORG00001          2     R     0xFFEE     0xFFEF   .absSeg110
-.bss                               6   R/W      0x180      0x185   RAM
-MyCode                           828     R     0x2245     0x2580   ROM
+.bss                               2   R/W      0x184      0x185   RAM
+MyCode                           963     R     0x27DB     0x2B9D   ROM
 .common                         1304   R/W      0x186      0x69D   RAM
 .vectSeg219_vect                   2     R     0xFFFE     0xFFFF   .vectSeg219
 
 Summary of section sizes per section type:
-READ_ONLY (R):         D5F (dec:     3423)
+READ_ONLY (R):        1383 (dec:     4995)
 READ_WRITE (R/W):      5AB (dec:     1451)
 NO_INIT (N/I):          7E (dec:      126)
 
@@ -179,73 +183,91 @@ OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 MODULE:                 -- gpio.c.o --
 - PROCEDURES:
-     gpio_led_init                             18E6      12      18       1   .text       
-     gpio_led_on                               18F8       7       7       1   .text       
-     gpio_led_off                              18FF       C      12       2   .text       
+     gpio_led_init                             1918      12      18       1   .text       
+     gpio_led_on                               192A       7       7       1   .text       
+     gpio_led_off                              1931       C      12       2   .text       
+- VARIABLES:
+MODULE:                 -- sci_gb60.asm.o --
+- PROCEDURES:
+     sci1_init                                 27DB      1E      30       0   MyCode      
+     sc4bd                                     27F9       7       7       0   MyCode      
+     sc9bd                                     2800       7       7       0   MyCode      
+     sc19bd                                    2807       7       7       0   MyCode      
+     sc38bd                                    280E       7       7       0   MyCode      
+     sc57bd                                    2815       7       7       0   MyCode      
+     sc115bd                                   281C       5       5       0   MyCode      
+     scend                                     2821       E      14       0   MyCode      
+     sci1_in                                   282F       D      13       1   MyCode      
+     si1                                       283C       3       3       0   MyCode      
+     sci1_out                                  283F       2       2       1   MyCode      
+     so1                                       2841       D      13       0   MyCode      
+     sci1_str_out                              284E       4       4       5   MyCode      
+     scs1                                      2852       C      12       0   MyCode      
+     scs_end                                   285E       4       4       0   MyCode      
 - VARIABLES:
 MODULE:                 -- keyboard.asm.o --
 - PROCEDURES:
-     INITKEYB                                  2245      19      25       1   MyCode      
-     ikwait                                    225E       6       6       5   MyCode      
-     ikwait1                                   2264       E      14       0   MyCode      
-     test_klaves                               2272      13      19       1   MyCode      
-     test_klaves2                              2285       B      11       0   MyCode      
-     test_klaves3                              2290       B      11       0   MyCode      
-     test_klaves4                              229B       9       9       0   MyCode      
-     test_klaves5                              22A4      11      17       0   MyCode      
-     test_klaves6                              22B5      19      25       0   MyCode      
-     test_klaves7                              22CE      19      25       0   MyCode      
-     test_klaves8                              22E7      17      23       0   MyCode      
-     test_klaves_kon                           22FE       A      10       0   MyCode      
-     test_klaves_ER                            2308       7       7       0   MyCode      
+     INITKEYB                                  2862      19      25       1   MyCode      
+     ikwait                                    287B       6       6       5   MyCode      
+     ikwait1                                   2881       E      14       0   MyCode      
+     test_klaves                               288F      13      19       1   MyCode      
+     test_klaves2                              28A2       B      11       0   MyCode      
+     test_klaves3                              28AD       B      11       0   MyCode      
+     test_klaves4                              28B8       9       9       0   MyCode      
+     test_klaves5                              28C1      11      17       0   MyCode      
+     test_klaves6                              28D2      19      25       0   MyCode      
+     test_klaves7                              28EB      19      25       0   MyCode      
+     test_klaves8                              2904      17      23       0   MyCode      
+     test_klaves_kon                           291B       A      10       0   MyCode      
+     test_klaves_ER                            2925       7       7       0   MyCode      
 - VARIABLES:
-     KeyPressed                                  80       1       1      16   MY_ZEROPAGE 
+     KeyPressed                                  80       1       1      18   MY_ZEROPAGE 
      VAR00001                                  FFD2       2       2       0   .text       
 MODULE:                 -- display.asm.o --
 - PROCEDURES:
-     INITDISP                                  230F      33      51       1   MyCode      
-     CLRRED                                    2342       8       8       0   MyCode      
-     CLRGREEN                                  234A       6       6       0   MyCode      
-     clrdata                                   2350       F      15       0   MyCode      
-     RED10                                     235F      18      24       2   MyCode      
-     Red10A                                    2377      3C      60       0   MyCode      
-     ERROR10                                   23B3      16      22       0   MyCode      
-     GREEN10                                   23C9      18      24       2   MyCode      
-     Green10A                                  23E1      3C      60       0   MyCode      
-     RED16                                     241D       3       3       0   MyCode      
-     RED16a                                    2420       8       8       1   MyCode      
-     GREEN16                                   2428       3       3       0   MyCode      
-     GREEN16a                                  242B       5       5       1   MyCode      
-     Load16                                    2430      19      25       1   MyCode      
-     Treti                                     2449       2       2       0   MyCode      
-     TretiFalse                                244B      14      20       1   MyCode      
-     Druha                                     245F       2       2       0   MyCode      
-     DruhaFalse                                2461      19      25       1   MyCode      
-     Prvni                                     247A       2       2       0   MyCode      
-     PrvniFalse                                247C      14      20       1   MyCode      
-     Nulta                                     2490       2       2       0   MyCode      
-     NultaFalse                                2492       C      12       1   MyCode      
-     Priradhodnotu                             249E       8       8       4   MyCode      
-     H1                                        24A6       8       8       0   MyCode      
-     H2                                        24AE       8       8       0   MyCode      
-     H3                                        24B6       8       8       0   MyCode      
-     H4                                        24BE       8       8       0   MyCode      
-     H5                                        24C6       8       8       0   MyCode      
-     H6                                        24CE       8       8       0   MyCode      
-     H7                                        24D6       8       8       0   MyCode      
-     H8                                        24DE       8       8       0   MyCode      
-     H9                                        24E6       8       8       0   MyCode      
-     H10                                       24EE       8       8       0   MyCode      
-     H11                                       24F6       8       8       0   MyCode      
-     H12                                       24FE       8       8       0   MyCode      
-     H13                                       2506       8       8       0   MyCode      
-     H14                                       250E       8       8       0   MyCode      
-     H15                                       2516       8       8       0   MyCode      
-     WX                                        251E       A      10       0   MyCode      
-     IDWAIT1                                   2528       E      14       0   MyCode      
-     LED_INT                                   2536       F      15       1   MyCode      
-     n1                                        2545       E      14       0   MyCode      
-     n2                                        2553      11      17       0   MyCode      
+     INITDISP                                  292C      33      51       1   MyCode      
+     CLRRED                                    295F       8       8       0   MyCode      
+     CLRGREEN                                  2967       6       6       0   MyCode      
+     clrdata                                   296D       F      15       0   MyCode      
+     RED10                                     297C      18      24       2   MyCode      
+     Red10A                                    2994      3C      60       0   MyCode      
+     ERROR10                                   29D0      16      22       0   MyCode      
+     GREEN10                                   29E6      18      24       2   MyCode      
+     Green10A                                  29FE      3C      60       0   MyCode      
+     RED16                                     2A3A       3       3       0   MyCode      
+     RED16a                                    2A3D       8       8       1   MyCode      
+     GREEN16                                   2A45       3       3       0   MyCode      
+     GREEN16a                                  2A48       5       5       1   MyCode      
+     Load16                                    2A4D      19      25       1   MyCode      
+     Treti                                     2A66       2       2       0   MyCode      
+     TretiFalse                                2A68      14      20       1   MyCode      
+     Druha                                     2A7C       2       2       0   MyCode      
+     DruhaFalse                                2A7E      19      25       1   MyCode      
+     Prvni                                     2A97       2       2       0   MyCode      
+     PrvniFalse                                2A99      14      20       1   MyCode      
+     Nulta                                     2AAD       2       2       0   MyCode      
+     NultaFalse                                2AAF       C      12       1   MyCode      
+     Priradhodnotu                             2ABB       8       8       4   MyCode      
+     H1                                        2AC3       8       8       0   MyCode      
+     H2                                        2ACB       8       8       0   MyCode      
+     H3                                        2AD3       8       8       0   MyCode      
+     H4                                        2ADB       8       8       0   MyCode      
+     H5                                        2AE3       8       8       0   MyCode      
+     H6                                        2AEB       8       8       0   MyCode      
+     H7                                        2AF3       8       8       0   MyCode      
+     H8                                        2AFB       8       8       0   MyCode      
+     H9                                        2B03       8       8       0   MyCode      
+     H10                                       2B0B       8       8       0   MyCode      
+     H11                                       2B13       8       8       0   MyCode      
+     H12                                       2B1B       8       8       0   MyCode      
+     H13                                       2B23       8       8       0   MyCode      
+     H14                                       2B2B       8       8       0   MyCode      
+     H15                                       2B33       8       8       0   MyCode      
+     WX                                        2B3B       A      10       0   MyCode      
+     IDWAIT1                                   2B45       E      14       0   MyCode      
+     LED_INT                                   2B53       F      15       1   MyCode      
+     n1                                        2B62       E      14       0   MyCode      
+     n2                                        2B70      11      17       0   MyCode      
 - VARIABLES:
      GREENDISP                                   81       4       4       5   MY_ZEROPAGE 
      REDDISP                                     85       4       4       4   MY_ZEROPAGE 
@@ -255,47 +277,81 @@ MODULE:                 -- display.asm.o --
      VAR00001                                  FFE2       2       2       0   .text       
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      190B      DE     222       1   .text       
-     cas                                       19E9       F      15       1   .text       
-     sci                                       19F8      15      21       1   .text       
-     stopky                                    1A0D       9       9       1   .text       
-     stopkyFunction                            1A16      E6     230       3   .text       
-     counter                                   1AFC       1       1       1   .text       
-     keyboard                                  1AFD      2E      46       1   .text       
+     main                                      193D      DE     222       1   .text       
+     cas                                       1A1B       F      15       1   .text       
+     sci                                       1A2A      17      23       1   .text       
+     stopky                                    1A41       A      10       1   .text       
+     stopkyFunction                            1A4B     1C0     448       4   .text       
+     intToTime                                 1C0B     11A     282       3   .text       
+     counter                                   1D25       1       1       1   .text       
+     keyboard                                  1D26      6A     106       1   .text       
 - VARIABLES:
      STRING.proc1.1                            18C2       6       6       1   .rodata1    
      STRING.proc2.2                            18C8       6       6       1   .rodata1    
      STRING.proc3.3                            18CE       6       6       1   .rodata1    
      STRING.proc4.4                            18D4       6       6       1   .rodata1    
      STRING.proc5.5                            18DA       6       6       1   .rodata1    
-     time                                       180       4       4       8   .bss        
+     STRING.start.6                            18E0       6       6       1   .rodata1    
+     STRING.Stop.7                             18E6       5       5       1   .rodata1    
+     STRING.Start.8                            18EB       6       6       1   .rodata1    
+     STRING.mezi.9                             18F1       5       5       1   .rodata1    
+     STRING.Mezicas.10                         18F6       8       8       1   .rodata1    
+     STRING.reset.11                           18FE       6       6       1   .rodata1    
+     STRING.Restart.12                         1904       8       8       1   .rodata1    
+     STRING.Konec.13                           190C       6       6       1   .rodata1    
+     time                                       100       4       4      11   .data       
      mezicas                                    184       1       1       3   .bss        
      stop                                       185       1       1       3   .bss        
      init                                       186       2       2       2   .common     
-     pSCI                                       188       2       2       2   .common     
+     pSCI                                       188       2       2       3   .common     
      pStopky                                    18A       2       2       2   .common     
-     pCounter                                   18C       2       2       1   .common     
+     pCounter                                   18C       2       2       2   .common     
      pKeyboard                                  18E       2       2       2   .common     
      pCas                                       190       2       2       8   .common     
      tlac                                       192       1       1       3   .common     
 MODULE:                 -- main.asm.o --
 - PROCEDURES:
-     asm_main                                  2564       5       5       1   MyCode      
+     asm_main                                  2B81       5       5       1   MyCode      
 - VARIABLES:
      temp_byte                                   8C       1       1       1   MY_ZEROPAGE 
 MODULE:                 -- RTSHC08.C.o (ansifs.lib) --
 - PROCEDURES:
-     _PUSH_ARGS_L                              1B2B      20      32       1   .text       
-     _ENTER_UNARY_L                            1B4B      29      41       1   .text       
-     _ENTER_BINARY_L_RC                        1B74      19      25       2   .text       
-     _LDIVMOD                                  1B8D      A4     164       2   .text       
-     _LMODU_k_is_k_mod_j                       1C31       B      11       1   .text       
-     _LDIVU_k_is_k_div_j                       1C3C      17      23       1   .text       
-     _ICMP                                     1C53      16      22       1   .text       
-     _LINC                                     1C69      16      22       1   .text       
-     _LDIVU_RC                                 1C7F       6       6       3   .text       
-     _LMODU_RC                                 1C85       6       6       3   .text       
-     _POP32                                    1C8B      1A      26       1   .text       
+     _PUSH_ARGS_L                              1D90      20      32       2   .text       
+     _ENTER_UNARY_L                            1DB0      29      41       1   .text       
+     _ENTER_BINARY_L                           1DD9      16      22       3   .text       
+     _ENTER_BINARY_L_RC                        1DEF      19      25       3   .text       
+     _IDIVMOD                                  1E08      69     105       1   .text       
+     _SPLITSIGN                                1E71      1C      28       2   .text       
+     _k_is_k_plus_j_l                          1E8D      1E      30       2   .text       
+     _k_is_k_plus_j_i                          1EAB      12      18       3   .text       
+     _LSUB_k_is_k_minus_j                      1EBD      1F      31       1   .text       
+     _LMUL_k_is_k_mul_j                        1EDC      81     129       1   .text       
+     _LDIVMOD                                  1F5D      A4     164       3   .text       
+     _NEG_L_HX                                 2001      13      19       2   .text       
+     _ABS_L_HX                                 2014       6       6       2   .text       
+     _SPLITSIGN_L                              201A       A      10       1   .text       
+     _LMODU_k_is_k_mod_j                       2024       B      11       1   .text       
+     _LDIVU_k_is_k_div_j                       202F      17      23       2   .text       
+     _LDIVS_k_is_k_div_j                       2046      27      39       1   .text       
+     _IDIVS_STAR08                             206D      1B      27       1   .text       
+     _IMODS_STAR08                             2088      25      37       1   .text       
+     _ICMP                                     20AD      16      22       1   .text       
+     _LINC                                     20C3      16      22       1   .text       
+     _LSUB                                     20D9       6       6       1   .text       
+     _LMUL                                     20DF       6       6       1   .text       
+     _LDIVS_RC                                 20E5       6       6       1   .text       
+     _LDIVU                                    20EB       6       6       1   .text       
+     _LDIVU_RC                                 20F1       6       6       3   .text       
+     _LMODU_RC                                 20F7       6       6       3   .text       
+     _POP32                                    20FD      1A      26       3   .text       
+     _SEXT16_32                                2117       D      13       1   .text       
+     _Jump_Table_Header_Offset                 2124      24      36       1   .text       
+- VARIABLES:
+MODULE:                 -- STRING.C.o (ansifs.lib) --
+- PROCEDURES:
+     strlen                                    2148      27      39       2   .text       
+     strncmp                                   216F      54      84       1   .text       
+     strstr                                    21C3      78     120       3   .text       
 - VARIABLES:
 MODULE:                 -- MC9S08GB60A.C.o --
 - PROCEDURES:
@@ -371,7 +427,7 @@ MODULE:                 -- MC9S08GB60A.C.o --
      _TPM2C2SC                                   6B       1       1       0   .abs_section_6b
      _TPM2C3SC                                   6E       1       1       0   .abs_section_6e
      _TPM2C4SC                                   71       1       1       0   .abs_section_71
-     _SRS                                      1800       1       1      13   .abs_section_1800
+     _SRS                                      1800       1       1      15   .abs_section_1800
      _SBDFR                                    1801       1       1       0   .abs_section_1801
      _SOPT                                     1802       1       1       0   .abs_section_1802
      _SRTISC                                   1808       1       1       0   .abs_section_1808
@@ -416,25 +472,25 @@ MODULE:                 -- Start08.c.o --
 - VARIABLES:
      _startupData                              18B0       6       6       4   .startData  
 - LABELS:
-     __SEG_END_SSTACK                           180       0       0       1               
+     __SEG_END_SSTACK                           184       0       0       1               
 MODULE:                 -- C:\Documents and Settings\dolinay\Dokumenty\Mikropocitace\Freescale\rtmon_hc08\rtmon_lib\rtmon_lib_Data\Standard\ObjectCode\rtmon_08c.c.o (rtmon_5ms.lib) --
 - PROCEDURES:
-     rtmon_kernel                              1CA5      90     144       1   .text       
-     rtmon_scheduler                           1D35      69     105       1   .text       
-     rtmon_refreshqwaiting                     1D9E      B5     181       4   .text       
-     rtmon_dummy                               1E53       E      14       1   .text       
-     rtmon_pq_findhiestpriority                1E61      56      86       1   .text       
-     rtmon_initprocstack                       1EB7      53      83       3   .text       
-     rtmon_push                                1F0A      14      20       6   .text       
-     rtm_init                                  1F1E      B1     177       1   .text       
-     rtm_create_p                              1FCF      F9     249       8   .text       
-     rtm_start_p                               20C8      88     136       3   .text       
-     rtm_delay_p                               2150      4F      79       2   .text       
-     rtm_continue_p                            219F      33      51       1   .text       
-     rtm_ch_period_p                           21D2      2D      45       2   .text       
-     rtm_stop_p                                21FF      46      70       3   .text       
+     rtmon_kernel                              223B      90     144       1   .text       
+     rtmon_scheduler                           22CB      69     105       1   .text       
+     rtmon_refreshqwaiting                     2334      B5     181       4   .text       
+     rtmon_dummy                               23E9       E      14       1   .text       
+     rtmon_pq_findhiestpriority                23F7      56      86       1   .text       
+     rtmon_initprocstack                       244D      53      83       3   .text       
+     rtmon_push                                24A0      14      20       6   .text       
+     rtm_init                                  24B4      B1     177       1   .text       
+     rtm_create_p                              2565      F9     249       8   .text       
+     rtm_start_p                               265E      88     136       3   .text       
+     rtm_delay_p                               26E6      4F      79       2   .text       
+     rtm_continue_p                            2735      33      51       1   .text       
+     rtm_ch_period_p                           2768      2D      45       2   .text       
+     rtm_stop_p                                2795      46      70       3   .text       
 - VARIABLES:
-     STRING.dummy.1                            18E0       6       6       1   .rodata1    
+     STRING.dummy.1                            1912       6       6       1   .rodata1    
      rtmon_data                                 193      D8     216      17   .common     
      rtmon_stackpool                            26B     400    1024       5   .common     
      rtmon_lastprocess                          66B       1       1       9   .common     
@@ -447,8 +503,8 @@ MODULE:                 -- C:\Documents and Settings\dolinay\Dokumenty\Mikropoci
      rtmon_lastq                                69D       1       1       5   .common     
 MODULE:                 -- C:\Documents and Settings\dolinay\Dokumenty\Mikropocitace\Freescale\rtmon_hc08\rtmon_lib\rtmon_lib_Data\Standard\ObjectCode\rtmon_asm.asm.o (rtmon_5ms.lib) --
 - PROCEDURES:
-     TOF_int                                   2569      10      16       2   MyCode      
-     rtmon_SWI                                 2579       8       8       4   MyCode      
+     TOF_int                                   2B86      10      16       2   MyCode      
+     rtmon_SWI                                 2B96       8       8       4   MyCode      
 - VARIABLES:
      VAR00001                                  FFEE       2       2       0   .text       
 
@@ -457,45 +513,55 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   gpio.c.o                                     0     37      0
+  sci_gb60.asm.o                               0    135      0
   keyboard.asm.o                               1    202      2
   display.asm.o                               11    597      2
-  main.c.o                                    19    544     30
+  main.c.o                                    19   1107     80
   main.asm.o                                   1      5      0
-  RTSHC08.C.o (ansifs.lib)                     0    378      0
+  RTSHC08.C.o (ansifs.lib)                     0    952      0
+  STRING.C.o (ansifs.lib)                      0    243      0
   MC9S08GB60A.C.o                            126      0      0
   Start08.c.o                                  0    132      0
   C:\Documents and Settings\dolinay\Dokumenty\Mikropocitace\Freescale\rtmon_hc08\rtmon_lib\rtmon_lib_Data\Standard\ObjectCode\rtmon_08c.c.o (rtmon_5ms.lib)  1291   1440      6
   C:\Documents and Settings\dolinay\Dokumenty\Mikropocitace\Freescale\rtmon_hc08\rtmon_lib\rtmon_lib_Data\Standard\ObjectCode\rtmon_asm.asm.o (rtmon_5ms.lib)     0     24      2
-  other                                      128     20      2
+  other                                      128     20      9
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
   gpio_led_init gpio_led_on gpio_led_off main cas sci stopky stopkyFunction 
-  counter keyboard _PUSH_ARGS_L _ENTER_UNARY_L _ENTER_BINARY_L_RC _LDIVMOD 
-  _LMODU_k_is_k_mod_j _LDIVU_k_is_k_div_j _ICMP _LINC _LDIVU_RC _LMODU_RC 
-  _POP32 rtmon_kernel rtmon_scheduler rtmon_refreshqwaiting rtmon_dummy 
+  intToTime counter keyboard _PUSH_ARGS_L _ENTER_UNARY_L _ENTER_BINARY_L 
+  _ENTER_BINARY_L_RC _IDIVMOD _SPLITSIGN _k_is_k_plus_j_l _k_is_k_plus_j_i 
+  _LSUB_k_is_k_minus_j _LMUL_k_is_k_mul_j _LDIVMOD _NEG_L_HX _ABS_L_HX 
+  _SPLITSIGN_L _LMODU_k_is_k_mod_j _LDIVU_k_is_k_div_j _LDIVS_k_is_k_div_j 
+  _IDIVS_STAR08 _IMODS_STAR08 _ICMP _LINC _LSUB _LMUL _LDIVS_RC _LDIVU 
+  _LDIVU_RC _LMODU_RC _POP32 _SEXT16_32 _Jump_Table_Header_Offset strlen 
+  strncmp strstr rtmon_kernel rtmon_scheduler rtmon_refreshqwaiting rtmon_dummy 
   rtmon_pq_findhiestpriority rtmon_initprocstack rtmon_push rtm_init 
   rtm_create_p rtm_start_p rtm_delay_p rtm_continue_p rtm_ch_period_p 
   rtm_stop_p VAR00001 VAR00001 VAR00001 
+SECTION: ".data"
+  time 
 SECTION: ".bss"
-  time mezicas stop 
+  mezicas stop 
 SECTION: ".init"
   loadByte Init _Startup 
 SECTION: ".rodata1"
   STRING.proc1.1 STRING.proc2.2 STRING.proc3.3 STRING.proc4.4 STRING.proc5.5 
-  STRING.dummy.1 
+  STRING.start.6 STRING.Stop.7 STRING.Start.8 STRING.mezi.9 STRING.Mezicas.10 
+  STRING.reset.11 STRING.Restart.12 STRING.Konec.13 STRING.dummy.1 
 SECTION: "MY_ZEROPAGE"
   KeyPressed GREENDISP REDDISP activdisp adrdisp pom temp_byte 
 SECTION: "MyCode"
-  INITKEYB ikwait ikwait1 test_klaves test_klaves2 test_klaves3 test_klaves4 
-  test_klaves5 test_klaves6 test_klaves7 test_klaves8 test_klaves_kon 
-  test_klaves_ER INITDISP CLRRED CLRGREEN clrdata RED10 Red10A ERROR10 GREEN10 
-  Green10A RED16 RED16a GREEN16 GREEN16a Load16 Treti TretiFalse Druha 
-  DruhaFalse Prvni PrvniFalse Nulta NultaFalse Priradhodnotu H1 H2 H3 H4 H5 H6 
-  H7 H8 H9 H10 H11 H12 H13 H14 H15 WX IDWAIT1 LED_INT n1 n2 asm_main TOF_int 
-  rtmon_SWI 
+  sci1_init sc4bd sc9bd sc19bd sc38bd sc57bd sc115bd scend sci1_in si1 
+  sci1_out so1 sci1_str_out scs1 scs_end INITKEYB ikwait ikwait1 test_klaves 
+  test_klaves2 test_klaves3 test_klaves4 test_klaves5 test_klaves6 test_klaves7 
+  test_klaves8 test_klaves_kon test_klaves_ER INITDISP CLRRED CLRGREEN clrdata 
+  RED10 Red10A ERROR10 GREEN10 Green10A RED16 RED16a GREEN16 GREEN16a Load16 
+  Treti TretiFalse Druha DruhaFalse Prvni PrvniFalse Nulta NultaFalse 
+  Priradhodnotu H1 H2 H3 H4 H5 H6 H7 H8 H9 H10 H11 H12 H13 H14 H15 WX IDWAIT1 
+  LED_INT n1 n2 asm_main TOF_int rtmon_SWI 
 SECTION: ".common"
   init pSCI pStopky pCounter pKeyboard pCas tlac rtmon_data rtmon_stackpool 
   rtmon_lastprocess rtmon_toberun rtmon_curproc rtmon_tobesp rtmon_status 
@@ -808,20 +874,20 @@ OBJECT LIST SORTED BY ADDRESS
      _TPM2C3V                                    6F       2       2       0   .abs_section_6f
      _TPM2C4SC                                   71       1       1       0   .abs_section_71
      _TPM2C4V                                    72       2       2       0   .abs_section_72
-     KeyPressed                                  80       1       1      16   MY_ZEROPAGE 
+     KeyPressed                                  80       1       1      18   MY_ZEROPAGE 
      GREENDISP                                   81       4       4       5   MY_ZEROPAGE 
      REDDISP                                     85       4       4       4   MY_ZEROPAGE 
      activdisp                                   89       1       1       5   MY_ZEROPAGE 
      adrdisp                                     8A       1       1       5   MY_ZEROPAGE 
      pom                                         8B       1       1       2   MY_ZEROPAGE 
      temp_byte                                   8C       1       1       1   MY_ZEROPAGE 
-     time                                       180       4       4       8   .bss        
+     time                                       100       4       4      11   .data       
      mezicas                                    184       1       1       3   .bss        
      stop                                       185       1       1       3   .bss        
      init                                       186       2       2       2   .common     
-     pSCI                                       188       2       2       2   .common     
+     pSCI                                       188       2       2       3   .common     
      pStopky                                    18A       2       2       2   .common     
-     pCounter                                   18C       2       2       1   .common     
+     pCounter                                   18C       2       2       2   .common     
      pKeyboard                                  18E       2       2       2   .common     
      pCas                                       190       2       2       8   .common     
      tlac                                       192       1       1       3   .common     
@@ -835,7 +901,7 @@ OBJECT LIST SORTED BY ADDRESS
      g_TickCount                                673       2       2       1   .common     
      rtmon_queues                               675      28      40       8   .common     
      rtmon_lastq                                69D       1       1       5   .common     
-     _SRS                                      1800       1       1      13   .abs_section_1800
+     _SRS                                      1800       1       1      15   .abs_section_1800
      _SBDFR                                    1801       1       1       0   .abs_section_1801
      _SOPT                                     1802       1       1       0   .abs_section_1802
      _SDID                                     1806       2       2       0   .abs_section_1806
@@ -864,101 +930,147 @@ OBJECT LIST SORTED BY ADDRESS
      STRING.proc3.3                            18CE       6       6       1   .rodata1    
      STRING.proc4.4                            18D4       6       6       1   .rodata1    
      STRING.proc5.5                            18DA       6       6       1   .rodata1    
-     STRING.dummy.1                            18E0       6       6       1   .rodata1    
-     gpio_led_init                             18E6      12      18       1   .text       
-     gpio_led_on                               18F8       7       7       1   .text       
-     gpio_led_off                              18FF       C      12       2   .text       
-     main                                      190B      DE     222       1   .text       
-     cas                                       19E9       F      15       1   .text       
-     sci                                       19F8      15      21       1   .text       
-     stopky                                    1A0D       9       9       1   .text       
-     stopkyFunction                            1A16      E6     230       3   .text       
-     counter                                   1AFC       1       1       1   .text       
-     keyboard                                  1AFD      2E      46       1   .text       
-     _PUSH_ARGS_L                              1B2B      20      32       1   .text       
-     _ENTER_UNARY_L                            1B4B      29      41       1   .text       
-     _ENTER_BINARY_L_RC                        1B74      19      25       2   .text       
-     _LDIVMOD                                  1B8D      A4     164       2   .text       
-     _LMODU_k_is_k_mod_j                       1C31       B      11       1   .text       
-     _LDIVU_k_is_k_div_j                       1C3C      17      23       1   .text       
-     _ICMP                                     1C53      16      22       1   .text       
-     _LINC                                     1C69      16      22       1   .text       
-     _LDIVU_RC                                 1C7F       6       6       3   .text       
-     _LMODU_RC                                 1C85       6       6       3   .text       
-     _POP32                                    1C8B      1A      26       1   .text       
-     rtmon_kernel                              1CA5      90     144       1   .text       
-     rtmon_scheduler                           1D35      69     105       1   .text       
-     rtmon_refreshqwaiting                     1D9E      B5     181       4   .text       
-     rtmon_dummy                               1E53       E      14       1   .text       
-     rtmon_pq_findhiestpriority                1E61      56      86       1   .text       
-     rtmon_initprocstack                       1EB7      53      83       3   .text       
-     rtmon_push                                1F0A      14      20       6   .text       
-     rtm_init                                  1F1E      B1     177       1   .text       
-     rtm_create_p                              1FCF      F9     249       8   .text       
-     rtm_start_p                               20C8      88     136       3   .text       
-     rtm_delay_p                               2150      4F      79       2   .text       
-     rtm_continue_p                            219F      33      51       1   .text       
-     rtm_ch_period_p                           21D2      2D      45       2   .text       
-     rtm_stop_p                                21FF      46      70       3   .text       
-     INITKEYB                                  2245      19      25       1   MyCode      
-     ikwait                                    225E       6       6       5   MyCode      
-     ikwait1                                   2264       E      14       0   MyCode      
-     test_klaves                               2272      13      19       1   MyCode      
-     test_klaves2                              2285       B      11       0   MyCode      
-     test_klaves3                              2290       B      11       0   MyCode      
-     test_klaves4                              229B       9       9       0   MyCode      
-     test_klaves5                              22A4      11      17       0   MyCode      
-     test_klaves6                              22B5      19      25       0   MyCode      
-     test_klaves7                              22CE      19      25       0   MyCode      
-     test_klaves8                              22E7      17      23       0   MyCode      
-     test_klaves_kon                           22FE       A      10       0   MyCode      
-     test_klaves_ER                            2308       7       7       0   MyCode      
-     INITDISP                                  230F      33      51       1   MyCode      
-     CLRRED                                    2342       8       8       0   MyCode      
-     CLRGREEN                                  234A       6       6       0   MyCode      
-     clrdata                                   2350       F      15       0   MyCode      
-     RED10                                     235F      18      24       2   MyCode      
-     Red10A                                    2377      3C      60       0   MyCode      
-     ERROR10                                   23B3      16      22       0   MyCode      
-     GREEN10                                   23C9      18      24       2   MyCode      
-     Green10A                                  23E1      3C      60       0   MyCode      
-     RED16                                     241D       3       3       0   MyCode      
-     RED16a                                    2420       8       8       1   MyCode      
-     GREEN16                                   2428       3       3       0   MyCode      
-     GREEN16a                                  242B       5       5       1   MyCode      
-     Load16                                    2430      19      25       1   MyCode      
-     Treti                                     2449       2       2       0   MyCode      
-     TretiFalse                                244B      14      20       1   MyCode      
-     Druha                                     245F       2       2       0   MyCode      
-     DruhaFalse                                2461      19      25       1   MyCode      
-     Prvni                                     247A       2       2       0   MyCode      
-     PrvniFalse                                247C      14      20       1   MyCode      
-     Nulta                                     2490       2       2       0   MyCode      
-     NultaFalse                                2492       C      12       1   MyCode      
-     Priradhodnotu                             249E       8       8       4   MyCode      
-     H1                                        24A6       8       8       0   MyCode      
-     H2                                        24AE       8       8       0   MyCode      
-     H3                                        24B6       8       8       0   MyCode      
-     H4                                        24BE       8       8       0   MyCode      
-     H5                                        24C6       8       8       0   MyCode      
-     H6                                        24CE       8       8       0   MyCode      
-     H7                                        24D6       8       8       0   MyCode      
-     H8                                        24DE       8       8       0   MyCode      
-     H9                                        24E6       8       8       0   MyCode      
-     H10                                       24EE       8       8       0   MyCode      
-     H11                                       24F6       8       8       0   MyCode      
-     H12                                       24FE       8       8       0   MyCode      
-     H13                                       2506       8       8       0   MyCode      
-     H14                                       250E       8       8       0   MyCode      
-     H15                                       2516       8       8       0   MyCode      
-     WX                                        251E       A      10       0   MyCode      
-     IDWAIT1                                   2528       E      14       0   MyCode      
-     LED_INT                                   2536       F      15       1   MyCode      
-     n1                                        2545       E      14       0   MyCode      
-     n2                                        2553      11      17       0   MyCode      
-     asm_main                                  2564       5       5       1   MyCode      
-     TOF_int                                   2569      10      16       2   MyCode      
-     rtmon_SWI                                 2579       8       8       4   MyCode      
+     STRING.start.6                            18E0       6       6       1   .rodata1    
+     STRING.Stop.7                             18E6       5       5       1   .rodata1    
+     STRING.Start.8                            18EB       6       6       1   .rodata1    
+     STRING.mezi.9                             18F1       5       5       1   .rodata1    
+     STRING.Mezicas.10                         18F6       8       8       1   .rodata1    
+     STRING.reset.11                           18FE       6       6       1   .rodata1    
+     STRING.Restart.12                         1904       8       8       1   .rodata1    
+     STRING.Konec.13                           190C       6       6       1   .rodata1    
+     STRING.dummy.1                            1912       6       6       1   .rodata1    
+     gpio_led_init                             1918      12      18       1   .text       
+     gpio_led_on                               192A       7       7       1   .text       
+     gpio_led_off                              1931       C      12       2   .text       
+     main                                      193D      DE     222       1   .text       
+     cas                                       1A1B       F      15       1   .text       
+     sci                                       1A2A      17      23       1   .text       
+     stopky                                    1A41       A      10       1   .text       
+     stopkyFunction                            1A4B     1C0     448       4   .text       
+     intToTime                                 1C0B     11A     282       3   .text       
+     counter                                   1D25       1       1       1   .text       
+     keyboard                                  1D26      6A     106       1   .text       
+     _PUSH_ARGS_L                              1D90      20      32       2   .text       
+     _ENTER_UNARY_L                            1DB0      29      41       1   .text       
+     _ENTER_BINARY_L                           1DD9      16      22       3   .text       
+     _ENTER_BINARY_L_RC                        1DEF      19      25       3   .text       
+     _IDIVMOD                                  1E08      69     105       1   .text       
+     _SPLITSIGN                                1E71      1C      28       2   .text       
+     _k_is_k_plus_j_l                          1E8D      1E      30       2   .text       
+     _k_is_k_plus_j_i                          1EAB      12      18       3   .text       
+     _LSUB_k_is_k_minus_j                      1EBD      1F      31       1   .text       
+     _LMUL_k_is_k_mul_j                        1EDC      81     129       1   .text       
+     _LDIVMOD                                  1F5D      A4     164       3   .text       
+     _NEG_L_HX                                 2001      13      19       2   .text       
+     _ABS_L_HX                                 2014       6       6       2   .text       
+     _SPLITSIGN_L                              201A       A      10       1   .text       
+     _LMODU_k_is_k_mod_j                       2024       B      11       1   .text       
+     _LDIVU_k_is_k_div_j                       202F      17      23       2   .text       
+     _LDIVS_k_is_k_div_j                       2046      27      39       1   .text       
+     _IDIVS_STAR08                             206D      1B      27       1   .text       
+     _IMODS_STAR08                             2088      25      37       1   .text       
+     _ICMP                                     20AD      16      22       1   .text       
+     _LINC                                     20C3      16      22       1   .text       
+     _LSUB                                     20D9       6       6       1   .text       
+     _LMUL                                     20DF       6       6       1   .text       
+     _LDIVS_RC                                 20E5       6       6       1   .text       
+     _LDIVU                                    20EB       6       6       1   .text       
+     _LDIVU_RC                                 20F1       6       6       3   .text       
+     _LMODU_RC                                 20F7       6       6       3   .text       
+     _POP32                                    20FD      1A      26       3   .text       
+     _SEXT16_32                                2117       D      13       1   .text       
+     _Jump_Table_Header_Offset                 2124      24      36       1   .text       
+     strlen                                    2148      27      39       2   .text       
+     strncmp                                   216F      54      84       1   .text       
+     strstr                                    21C3      78     120       3   .text       
+     rtmon_kernel                              223B      90     144       1   .text       
+     rtmon_scheduler                           22CB      69     105       1   .text       
+     rtmon_refreshqwaiting                     2334      B5     181       4   .text       
+     rtmon_dummy                               23E9       E      14       1   .text       
+     rtmon_pq_findhiestpriority                23F7      56      86       1   .text       
+     rtmon_initprocstack                       244D      53      83       3   .text       
+     rtmon_push                                24A0      14      20       6   .text       
+     rtm_init                                  24B4      B1     177       1   .text       
+     rtm_create_p                              2565      F9     249       8   .text       
+     rtm_start_p                               265E      88     136       3   .text       
+     rtm_delay_p                               26E6      4F      79       2   .text       
+     rtm_continue_p                            2735      33      51       1   .text       
+     rtm_ch_period_p                           2768      2D      45       2   .text       
+     rtm_stop_p                                2795      46      70       3   .text       
+     sci1_init                                 27DB      1E      30       0   MyCode      
+     sc4bd                                     27F9       7       7       0   MyCode      
+     sc9bd                                     2800       7       7       0   MyCode      
+     sc19bd                                    2807       7       7       0   MyCode      
+     sc38bd                                    280E       7       7       0   MyCode      
+     sc57bd                                    2815       7       7       0   MyCode      
+     sc115bd                                   281C       5       5       0   MyCode      
+     scend                                     2821       E      14       0   MyCode      
+     sci1_in                                   282F       D      13       1   MyCode      
+     si1                                       283C       3       3       0   MyCode      
+     sci1_out                                  283F       2       2       1   MyCode      
+     so1                                       2841       D      13       0   MyCode      
+     sci1_str_out                              284E       4       4       5   MyCode      
+     scs1                                      2852       C      12       0   MyCode      
+     scs_end                                   285E       4       4       0   MyCode      
+     INITKEYB                                  2862      19      25       1   MyCode      
+     ikwait                                    287B       6       6       5   MyCode      
+     ikwait1                                   2881       E      14       0   MyCode      
+     test_klaves                               288F      13      19       1   MyCode      
+     test_klaves2                              28A2       B      11       0   MyCode      
+     test_klaves3                              28AD       B      11       0   MyCode      
+     test_klaves4                              28B8       9       9       0   MyCode      
+     test_klaves5                              28C1      11      17       0   MyCode      
+     test_klaves6                              28D2      19      25       0   MyCode      
+     test_klaves7                              28EB      19      25       0   MyCode      
+     test_klaves8                              2904      17      23       0   MyCode      
+     test_klaves_kon                           291B       A      10       0   MyCode      
+     test_klaves_ER                            2925       7       7       0   MyCode      
+     INITDISP                                  292C      33      51       1   MyCode      
+     CLRRED                                    295F       8       8       0   MyCode      
+     CLRGREEN                                  2967       6       6       0   MyCode      
+     clrdata                                   296D       F      15       0   MyCode      
+     RED10                                     297C      18      24       2   MyCode      
+     Red10A                                    2994      3C      60       0   MyCode      
+     ERROR10                                   29D0      16      22       0   MyCode      
+     GREEN10                                   29E6      18      24       2   MyCode      
+     Green10A                                  29FE      3C      60       0   MyCode      
+     RED16                                     2A3A       3       3       0   MyCode      
+     RED16a                                    2A3D       8       8       1   MyCode      
+     GREEN16                                   2A45       3       3       0   MyCode      
+     GREEN16a                                  2A48       5       5       1   MyCode      
+     Load16                                    2A4D      19      25       1   MyCode      
+     Treti                                     2A66       2       2       0   MyCode      
+     TretiFalse                                2A68      14      20       1   MyCode      
+     Druha                                     2A7C       2       2       0   MyCode      
+     DruhaFalse                                2A7E      19      25       1   MyCode      
+     Prvni                                     2A97       2       2       0   MyCode      
+     PrvniFalse                                2A99      14      20       1   MyCode      
+     Nulta                                     2AAD       2       2       0   MyCode      
+     NultaFalse                                2AAF       C      12       1   MyCode      
+     Priradhodnotu                             2ABB       8       8       4   MyCode      
+     H1                                        2AC3       8       8       0   MyCode      
+     H2                                        2ACB       8       8       0   MyCode      
+     H3                                        2AD3       8       8       0   MyCode      
+     H4                                        2ADB       8       8       0   MyCode      
+     H5                                        2AE3       8       8       0   MyCode      
+     H6                                        2AEB       8       8       0   MyCode      
+     H7                                        2AF3       8       8       0   MyCode      
+     H8                                        2AFB       8       8       0   MyCode      
+     H9                                        2B03       8       8       0   MyCode      
+     H10                                       2B0B       8       8       0   MyCode      
+     H11                                       2B13       8       8       0   MyCode      
+     H12                                       2B1B       8       8       0   MyCode      
+     H13                                       2B23       8       8       0   MyCode      
+     H14                                       2B2B       8       8       0   MyCode      
+     H15                                       2B33       8       8       0   MyCode      
+     WX                                        2B3B       A      10       0   MyCode      
+     IDWAIT1                                   2B45       E      14       0   MyCode      
+     LED_INT                                   2B53       F      15       1   MyCode      
+     n1                                        2B62       E      14       0   MyCode      
+     n2                                        2B70      11      17       0   MyCode      
+     asm_main                                  2B81       5       5       1   MyCode      
+     TOF_int                                   2B86      10      16       2   MyCode      
+     rtmon_SWI                                 2B96       8       8       4   MyCode      
      VAR00001                                  FFD2       2       2       0   .text       
      VAR00001                                  FFE2       2       2       0   .text       
      VAR00001                                  FFEE       2       2       0   .text       
@@ -970,50 +1082,58 @@ NOT USED PROCEDURES
 gpio.c.o:
   gpio_led_toggle gpio_button_init gpio_button_test gpio_button_test_w 
 RTSHC08.C.o (ansifs.lib):
-  _PUSH_ARGS_D _ENTER_UNARY_L64 _ENTER_UNARY_L64_4 _ENTER_BINARY_L 
-  _ENTER_BINARY_L_LC _ENTER_BINARY_L64 _ENTER_BINARY_L64_LC 
-  _ENTER_BINARY_L64_RC _IDIVMOD _SPLITSIGN _LADD_k_is_k_plus_j _k_is_k_plus_j_l 
-  _k_is_k_plus_j_i _LSUB_k_is_k_minus_j _LAND_k_is_k_and_j _LOR_k_is_k_or_j 
-  _LXOR_k_is_k_xor_j _LMUL_k_is_k_mul_j _NEG_L_HX _ABS_L_HX _SPLITSIGN_L 
-  _LMODS_k_is_k_mod_j _LDIVS_k_is_k_div_j _LCMP_k_rel_j _CMP24_k_rel_j _BMULS 
-  _BDIVS _BMODS _IMUL_STAR08 _IDIVS_STAR08 _IDIVU_STAR08 _IMODS_STAR08 
-  _IMODU_STAR08 _IDIVU_8 _IMODU_8 _IASR _ILSR _ILSL _LDEC _LNEG _LNOT _LADD 
-  _LADD_RC _LSUB _LSUB_LC _LSUB_RC _LAND _LAND_RC _LOR _LOR_RC _LXOR _LXOR_RC 
-  _LMUL _LMUL_RC _LDIVS _LDIVS_LC _LDIVS_RC _LDIVU _LDIVU_LC _LMODS _LMODS_LC 
+  _PUSH_ARGS_D _ENTER_UNARY_L64 _ENTER_UNARY_L64_4 _ENTER_BINARY_L_LC 
+  _ENTER_BINARY_L64 _ENTER_BINARY_L64_LC _ENTER_BINARY_L64_RC 
+  _LADD_k_is_k_plus_j _LAND_k_is_k_and_j _LOR_k_is_k_or_j _LXOR_k_is_k_xor_j 
+  _LMODS_k_is_k_mod_j _LCMP_k_rel_j _CMP24_k_rel_j _BMULS _BDIVS _BMODS 
+  _IMUL_STAR08 _IDIVU_STAR08 _IMODU_STAR08 _IDIVU_8 _IMODU_8 _IASR _ILSR _ILSL 
+  _LDEC _LNEG _LNOT _LADD _LADD_RC _LSUB_LC _LSUB_RC _LAND _LAND_RC _LOR 
+  _LOR_RC _LXOR _LXOR_RC _LMUL_RC _LDIVS _LDIVS_LC _LDIVU_LC _LMODS _LMODS_LC 
   _LMODS_RC _LMODU _LMODU_LC _LASR _LLSR _LLSL _LCMP _LCMP_RC _PUSH_ARGS_24 
   _ENTER_BINARY_24_RC _ENTER_BINARY_24 _CMP24 _CMP24_RC _COPY _COPY_L _POP64 
-  _STORE32 _STORE64 _SEXT8_32 _SEXT16_32 _CALL_STAR08 _CALL_STAR08_FAR 
-  _Jump_Table_Addr _Jump_Table_Offset _Jump_Table_Header_Addr 
-  _Jump_Table_Header_Offset _Search_Table_16_Addr _Search_Table_16_Offset 
-  _Search_Table_8_Addr _Search_Table_8_Offset _PUSH_CC _POP_CC 
-  _CONV_FAR_TO_NEAR _CONV_FAR_TO_LINEAR _CONV_LINEAR_TO_FAR F_CLRK F_CLRK_Unary 
-  F_NANK F_INFK F_INFK_Unary F_TLK F_XGKL _UNPACK_k_to_K _UNPACK_k_to_K_Unary 
-  _UNPACK_j_to_L _PACK_K_to_k _PACK_K_to_k_Unary F_NORMK _FADD_K_is_K_plus_L 
-  _FMUL_K_is_K_times_L _FDIV_K_is_L_div_K _F_LONGK _F_FLOATK _FCMP_k_rel_j 
-  _FADD_Common _FSUB_Common _FMUL_Common _FDIV_Common _FADD _FADD_RC _FSUB 
-  _FSUB_RC _FSUB_LC _FMUL _FMUL_RC _FDIV _FDIV_RC _FDIV_LC _FSTRUNC _FUTRUNC 
-  _FNEG _FABS _FCMP _FCMP_RC _FINC _FDEC _FSFLOAT _FUFLOAT D_TLK D_TLRes 
-  D_TKRes D_XGKL D_CLRK D_CLRK_Unary D_NANK D_NANK_Unary D_INFK D_INFK_Unary 
-  _DUNPACK_k_to_K _DUNPACK_k_to_K_Unary _DUNPACK_j_to_L _DPACK_K_to_k 
-  _DPACK_K_to_k_Unary D_NORMK_Unary D_NORMK _DADD_K_is_K_plus_L 
+  _STORE32 _STORE64 _SEXT8_32 _CALL_STAR08 _CALL_STAR08_FAR _Jump_Table_Addr 
+  _Jump_Table_Offset _Jump_Table_Header_Addr _Search_Table_16_Addr 
+  _Search_Table_16_Offset _Search_Table_8_Addr _Search_Table_8_Offset _PUSH_CC 
+  _POP_CC _CONV_FAR_TO_NEAR _CONV_FAR_TO_LINEAR _CONV_LINEAR_TO_FAR F_CLRK 
+  F_CLRK_Unary F_NANK F_INFK F_INFK_Unary F_TLK F_XGKL _UNPACK_k_to_K 
+  _UNPACK_k_to_K_Unary _UNPACK_j_to_L _PACK_K_to_k _PACK_K_to_k_Unary F_NORMK 
+  _FADD_K_is_K_plus_L _FMUL_K_is_K_times_L _FDIV_K_is_L_div_K _F_LONGK 
+  _F_FLOATK _FCMP_k_rel_j _FADD_Common _FSUB_Common _FMUL_Common _FDIV_Common 
+  _FADD _FADD_RC _FSUB _FSUB_RC _FSUB_LC _FMUL _FMUL_RC _FDIV _FDIV_RC _FDIV_LC 
+  _FSTRUNC _FUTRUNC _FNEG _FABS _FCMP _FCMP_RC _FINC _FDEC _FSFLOAT _FUFLOAT 
+  D_TLK D_TLRes D_TKRes D_XGKL D_CLRK D_CLRK_Unary D_NANK D_NANK_Unary D_INFK 
+  D_INFK_Unary _DUNPACK_k_to_K _DUNPACK_k_to_K_Unary _DUNPACK_j_to_L 
+  _DPACK_K_to_k _DPACK_K_to_k_Unary D_NORMK_Unary D_NORMK _DADD_K_is_K_plus_L 
   _DMUL_K_is_K_times_L _DDIV_K_is_L_div_K _DCMP_k_rel_j _D_FLOATK _D_LONGK 
   _D_FTODK _D_DTOFK _DADD_Common _DSUB_Common _DMUL_Common _DDIV_Common _DADD 
   _DADD_RC _DSUB _DSUB_RC _DSUB_LC _DMUL _DMUL_RC _DDIV _DDIV_LC _DDIV_RC _DCMP 
   _DCMP_RC _DINC _DDEC _DNEG _DABS _DSFLOAT _DUFLOAT _DSTRUNC _DUTRUNC _DSHORT 
   _DLONG 
+STRING.C.o (ansifs.lib):
+  strerror memchr memcmp memcpy2 memcpy _memcpy_8bitCount memmove memset 
+  _memset_clear_8bitCount strset strcat strncat strcpy strncpy strcmp strchr 
+  strrchr strspn strcspn strpbrk strtok strcoll strxfrm 
 C:\Documents and Settings\dolinay\Dokumenty\Mikropocitace\Freescale\rtmon_hc08\rtmon_lib\rtmon_lib_Data\Standard\ObjectCode\rtmon_08c.c.o (rtmon_5ms.lib):
   rtmon_pull rtm_end rtm_abort_p rtm_create_q rtm_write_q rtm_write_q_w 
   rtm_read_q rtm_read_q_w 
 NOT USED VARIABLES
 RTSHC08.C.o (ansifs.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 plus1 minus1 plus1d minus1d errno 
+STRING.C.o (ansifs.lib):
+  STRING..1 next.2 
 C:\Documents and Settings\dolinay\Dokumenty\Mikropocitace\Freescale\rtmon_hc08\rtmon_lib\rtmon_lib_Data\Standard\ObjectCode\rtmon_08c.c.o (rtmon_5ms.lib):
   rtmon_qpool 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0x2581 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0x2B9E ---- SIZE       4 ---
+Filling bytes inserted
+ 00030101
+------- ROM-ADDRESS: 0x2BA2 ---- RAM-ADDRESS: 0x101 ---- SIZE       3 ---
+Name of initialized Object : time:1
+ 01E4EE
+------- ROM-ADDRESS: 0x2BA5 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1035,16 +1155,35 @@ cas                       USES time _LINC _POP32 pCas rtm_stop_p
 sci                       USES gpio_led_on stopkyFunction gpio_led_off pSCI 
                                 rtm_stop_p 
 stopky                    USES stopkyFunction pCas rtm_stop_p 
-stopkyFunction            USES mezicas time _LDIVU_RC _LMODU_RC RED10 GREEN10 
-                                KeyPressed stop pCas rtm_ch_period_p rtm_continue_p 
-                                stopkyFunction rtm_delay_p 
-keyboard                  USES KeyPressed tlac time pStopky rtm_start_p 
+stopkyFunction            USES _SRS sci1_in mezicas time _LDIVU_RC _LMODU_RC 
+                                RED10 GREEN10 KeyPressed STRING.start.6 strstr stop 
+                                stopkyFunction STRING.Stop.7 sci1_str_out pCas 
+                                rtm_ch_period_p rtm_continue_p STRING.Start.8 STRING.mezi.9 
+                                STRING.Mezicas.10 STRING.reset.11 STRING.Restart.12 
+                                STRING.Konec.13 rtm_delay_p 
+intToTime                 USES intToTime _LDIVU _SEXT16_32 _LMUL _LSUB _POP32 
+                                _IDIVS_STAR08 _IMODS_STAR08 _LDIVS_RC 
+keyboard                  USES _SRS time intToTime KeyPressed tlac 
+                                _Jump_Table_Header_Offset pStopky pCounter pSCI rtm_start_p 
+_ENTER_BINARY_L           USES _PUSH_ARGS_L 
 _ENTER_BINARY_L_RC        USES _PUSH_ARGS_L 
+_SPLITSIGN                USES _IDIVMOD 
+_LMUL_k_is_k_mul_j        USES _k_is_k_plus_j_l _k_is_k_plus_j_i 
+_ABS_L_HX                 USES _NEG_L_HX 
+_SPLITSIGN_L              USES _ABS_L_HX 
 _LMODU_k_is_k_mod_j       USES _LDIVMOD 
 _LDIVU_k_is_k_div_j       USES _LDIVMOD 
+_LDIVS_k_is_k_div_j       USES _SPLITSIGN_L _LDIVMOD _NEG_L_HX 
+_IDIVS_STAR08             USES _SPLITSIGN 
+_IMODS_STAR08             USES _SPLITSIGN 
 _LINC                     USES _ENTER_UNARY_L 
+_LSUB                     USES _ENTER_BINARY_L _LSUB_k_is_k_minus_j 
+_LMUL                     USES _ENTER_BINARY_L _LMUL_k_is_k_mul_j 
+_LDIVS_RC                 USES _ENTER_BINARY_L_RC _LDIVS_k_is_k_div_j 
+_LDIVU                    USES _ENTER_BINARY_L _LDIVU_k_is_k_div_j 
 _LDIVU_RC                 USES _ENTER_BINARY_L_RC _LDIVU_k_is_k_div_j 
 _LMODU_RC                 USES _ENTER_BINARY_L_RC _LMODU_k_is_k_mod_j 
+strstr                    USES strlen strncmp 
 rtmon_kernel              USES rtmon_status _TPM1SC rtmon_curproc rtmon_tobesp 
                                 rtmon_initprocstack rtmon_scheduler g_TickCount 
                                 rtmon_refreshqwaiting rtmon_pq_findhiestpriority rtmon_toberun 
@@ -1067,6 +1206,7 @@ rtm_delay_p               USES _TPM1SC rtmon_data _TPM1MOD rtmon_status
 rtm_continue_p            USES _TPM1SC rtmon_status rtmon_SWI 
 rtm_ch_period_p           USES _TPM1SC 
 rtm_stop_p                USES _TPM1SC rtmon_curproc rtmon_status rtmon_SWI 
+scs1                      USES sci1_out 
 INITKEYB                  USES KeyPressed 
 test_klaves               USES ikwait KeyPressed 
 test_klaves2              USES KeyPressed 
@@ -1137,6 +1277,8 @@ DEPENDENCY TREE
  |  |  |    
  |  |  +- stopkyFunction      
  |  |  |  | 
+ |  |  |  +- sci1_in             
+ |  |  |  |    
  |  |  |  +- _LDIVU_RC           
  |  |  |  |  | 
  |  |  |  |  +- _ENTER_BINARY_L_RC  
@@ -1158,6 +1300,14 @@ DEPENDENCY TREE
  |  |  |  +- RED10               
  |  |  |  |    
  |  |  |  +- GREEN10             
+ |  |  |  |    
+ |  |  |  +- strstr              
+ |  |  |  |  | 
+ |  |  |  |  +- strlen              
+ |  |  |  |  |    
+ |  |  |  |  +- strncmp             
+ |  |  |  |       
+ |  |  |  +- sci1_str_out        
  |  |  |  |    
  |  |  |  +- rtm_ch_period_p     
  |  |  |  |    
@@ -1199,6 +1349,64 @@ DEPENDENCY TREE
  |  |    
  |  +- keyboard            
  |  |  | 
+ |  |  +- intToTime           
+ |  |  |  | 
+ |  |  |  +- _LDIVU              
+ |  |  |  |  | 
+ |  |  |  |  +- _ENTER_BINARY_L     
+ |  |  |  |  |  | 
+ |  |  |  |  |  +- _PUSH_ARGS_L         (see above)
+ |  |  |  |  |     
+ |  |  |  |  +- _LDIVU_k_is_k_div_j  (see above)
+ |  |  |  |     
+ |  |  |  +- _SEXT16_32          
+ |  |  |  |    
+ |  |  |  +- _LMUL               
+ |  |  |  |  | 
+ |  |  |  |  +- _ENTER_BINARY_L      (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- _LMUL_k_is_k_mul_j  
+ |  |  |  |     | 
+ |  |  |  |     +- _k_is_k_plus_j_l    
+ |  |  |  |     |    
+ |  |  |  |     +- _k_is_k_plus_j_i    
+ |  |  |  |          
+ |  |  |  +- _LSUB               
+ |  |  |  |  | 
+ |  |  |  |  +- _ENTER_BINARY_L      (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- _LSUB_k_is_k_minus_j
+ |  |  |  |       
+ |  |  |  +- _POP32              
+ |  |  |  |    
+ |  |  |  +- _IDIVS_STAR08       
+ |  |  |  |  | 
+ |  |  |  |  +- _SPLITSIGN          
+ |  |  |  |     | 
+ |  |  |  |     +- _IDIVMOD            
+ |  |  |  |          
+ |  |  |  +- _IMODS_STAR08       
+ |  |  |  |  | 
+ |  |  |  |  +- _SPLITSIGN           (see above)
+ |  |  |  |     
+ |  |  |  +- _LDIVS_RC           
+ |  |  |     | 
+ |  |  |     +- _ENTER_BINARY_L_RC   (see above)
+ |  |  |     |  
+ |  |  |     +- _LDIVS_k_is_k_div_j 
+ |  |  |        | 
+ |  |  |        +- _SPLITSIGN_L        
+ |  |  |        |  | 
+ |  |  |        |  +- _ABS_L_HX           
+ |  |  |        |     | 
+ |  |  |        |     +- _NEG_L_HX           
+ |  |  |        |          
+ |  |  |        +- _LDIVMOD             (see above)
+ |  |  |        |  
+ |  |  |        +- _NEG_L_HX            (see above)
+ |  |  |           
+ |  |  +- _Jump_Table_Header_Offset
+ |  |  |    
  |  |  +- rtm_start_p         
  |  |     | 
  |  |     +- rtmon_SWI            (see above)
@@ -1209,8 +1417,8 @@ DEPENDENCY TREE
  |  |  |  | 
  |  |  |  +- _ENTER_UNARY_L      
  |  |  |       
- |  |  +- _POP32              
- |  |  |    
+ |  |  +- _POP32               (see above)
+ |  |  |  
  |  |  +- rtm_stop_p           (see above)
  |  |     
  |  +- rtm_start_p          (see above)
@@ -1245,6 +1453,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 7
-Total size of all blocks to be downloaded: 3423
+Number of blocks to be downloaded: 9
+Total size of all blocks to be downloaded: 4995
 
