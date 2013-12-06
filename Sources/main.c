@@ -97,6 +97,7 @@ void sci( void )
       pFun = &counterFunction;
       pFun(1);
     }
+    string[0] = '\0';
   }while(strstr(string,"konec") == NULL);
   rtm_stop_p(pSCI);
 }
@@ -217,8 +218,10 @@ void counter(void)
 }
 
 void counterFunction(char stream){
-  char string[20],znak;
-  int pozice = 0;
+  char *string = "0:00:00,00",znak;
+  int pozice = 0, blink, low, high, display = 0;
+  long pomTime;
+  unsigned char hide = 0;
   if(stream == 1){
     do{
       __RESET_WATCHDOG();
@@ -229,27 +232,104 @@ void counterFunction(char stream){
     } while(znak != '#');
     if(strToTime(string)){
       sci1_str_out("Chybne zadani. Ukoncuji\n\r");
+      return;
     }
   } else{
+    pozice = 0xff;
     while(KeyPressed != 0xD){
       __RESET_WATCHDOG();
-    
+      blink = 0xfff;
+      if(pozice == 0xff){
+        pozice = (KeyPressed < 8 && KeyPressed != 0 ? KeyPressed : 0xff);
+        KeyPressed = 0xff;
+        low = ((counterTo / 100) % 60) + (counterTo % 100);
+        high = (counterTo / 360000) + (counterTo / 6000) % 60;
+        RED10(0,low);
+        GREEN10(0,high);
+        while(blink-- > 0)__RESET_WATCHDOG();
+        CLRRED();
+        CLRGREEN();
+      } else{
+        switch(pozice){
+          case 4 : hide = 4;break;
+          case 1 :
+          case 5 : hide = 3;break;
+          case 2 :
+          case 6 : hide = 2;break;
+          case 3 :
+          case 7 : hide = 1;break;
+          default : hide = 0;break;
+        }
+        display = (pozice < 4 ? 1 : 0);//1 zelený display 0 èervený
+        while(KeyPressed > 9 || KeyPressed == 0){
+          blink = 0xfff;
+          if(display == 1){
+            GREEN10(hide,high);
+          } else{
+            RED10(hide,low);
+          }
+          while(blink-- > 0)__RESET_WATCHDOG();
+          if(display == 1){
+            GREEN10(0,high);
+          } else{
+            RED10(0,low);
+          }
+        }
+        switch(pozice){
+          case 1 : string[0] = KeyPressed + '0';break;
+          case 2 : string[2] = KeyPressed + '0';break;
+          case 3 : string[3] = KeyPressed + '0';break;
+          case 4 : string[5] = KeyPressed + '0';break;
+          case 5 : string[6] = KeyPressed + '0';break;
+          case 6 : string[8] = KeyPressed + '0';break;
+          case 7 : string[9] = KeyPressed + '0';break;
+        }
+        string[10] = '\0';
+        
+        KeyPressed = pozice = 0xff;
+      }
     }
-  
   }
-  while(KeyPressed != 0xD)__RESET_WATCHDOG();
+  while(KeyPressed != 0xD || sci1_in() == 's')__RESET_WATCHDOG();
+  strToTime(string);
   time = 0;
   rtm_start_p(pCas,0,2);
-  while(1){
-  
+  while(KeyPressed != 0xD || sci1_in() == 's'){
+    __RESET_WATCHDOG();
+    pomTime = counterTo - time;
+    if(pomTime > 0){      
+      low = ((pomTime / 100) % 60) + (pomTime % 100);
+      high = (pomTime / 360000) + (pomTime / 6000) % 60;
+      RED10(0,low);
+      GREEN10(0,high);
+    }
+    if(pomTime <= 0 && pomTime > -500){
+      while(pomTime > -500){
+        __RESET_WATCHDOG();
+        blink = 0xfff;
+        CLRRED();
+        CLRGREEN();
+        while(blink-- > 0) __RESET_WATCHDOG();
+        RED10(0,0);
+        GREEN10(0,0);
+        pomTime = counterTo - time;
+      }
+    } else{
+      pomTime = abs(pomTime);
+      low = ((pomTime / 100) % 60) + (pomTime % 100);
+      high = (pomTime / 360000) + (pomTime / 6000) % 60;
+      GREENDISP &= 0x0fff;
+      GREENDISP |= 0x40000000;
+    }
   }
-  
+  counterTo = 0;
+  return;
 }
 
 char strToTime(char *string){
   long multiplier = 360000;
   unsigned long t = 0;
-  int i = 0,decimal = 1;
+  char i = 0,decimal = 1;
   while(i < 10){
     if(string[i] < 48 || string[i] > 57)
       return 1;
