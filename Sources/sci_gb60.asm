@@ -94,11 +94,14 @@ scend     mov       #0,SCI1C1
 ;*************************************************************************************
 
 sci1_in   nop
-si1       feed_watchdog
+          feed_watchdog
           lda       SCI1S1              ; precteme stavovy reg.1
           and       #%00100000          ; je nastaven RDRF?
           beq       si1                 ; pokud ne, cekej na prijem znaku
           lda       SCI1D               ; preceteme z datoveho registru prijaty znak
+          rts
+si1
+          lda       #0          
           rts
 
 
