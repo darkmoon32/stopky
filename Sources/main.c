@@ -23,12 +23,14 @@ void counter(void);
 void keyboard(void);
 void cas(void);
 void stopkyFunction(char stream);
- 
+void counterFunction(char stream);
+void intToTime(unsigned long t, char * string);
+char strToTime(char * string); 
 
 //global variables
-unsigned long time = 124142;
+unsigned long time = 0,counterTo = 0;
 unsigned char mezicas = 0, stop = 0,tlac;
-
+void (*pFun)(char);
 void main(void) {
   
   EnableInterrupts; /* enable interrupts */
@@ -76,22 +78,39 @@ void cas(void)
 
 void sci( void )
 {
-  gpio_led_on(LED4);
-  stopkyFunction(1);
-  gpio_led_off(LED4);
+  char string[10],znak;
+  int pozice = 0;
+  do{
+    __RESET_WATCHDOG();
+    if(pozice == 9)
+      pozice = 0;
+    znak = sci1_in();
+    if(znak != 0)
+      string[pozice++] = znak;
+    if(strstr(string,"stopky") != NULL){  
+      gpio_led_on(LED4);
+      pFun = &stopkyFunction;
+      pFun(1);
+      gpio_led_off(LED4);
+    } else if(strstr(string,"counter") != NULL){
+      sci1_str_out("Zadejte cas ve formatu H:MM:SS,MS\r\n");
+      pFun = &counterFunction;
+      pFun(1);
+    }
+  }while(strstr(string,"konec") == NULL);
   rtm_stop_p(pSCI);
 }
 
 void stopky(void)
 {
-    stopkyFunction(0);
+    pFun(0);
     rtm_stop_p(pCas);
 }
 
 
 void stopkyFunction(char stream)
 {
-  int low,high,pozice = 0;
+  int low,high,pozice = 0,delay = 0;
   char znak;
   char string[25];
     while(1)
@@ -111,25 +130,42 @@ void stopkyFunction(char stream)
           GREEN10(0,high);
         }
         
+        if(mezicas == 0 && stop == 0){
+          if(delay++ > 0xCFFF){
+            delay = 0;
+            gpio_led_toggle(LED1);
+          }          
+        }
+        
         if(KeyPressed == 0xC || strstr(string,"start") != NULL){//stisknuto stop/start
           stop |= 1;
           if(stop == 1){
             rtm_ch_period_p(pCas,0);
             rtm_delay_p(pCas,0);
             if(stream == 1){
-              sci1_str_out("Stop");
+              sci1_str_out("Stop ");
+              intToTime(time,string);
+              sci1_str_out(string);
+              sci1_str_out("\r\n");
             }
           } else{
             rtm_ch_period_p(pCas,2);
             rtm_continue_p(pCas);
             if(stream == 1){
-              sci1_str_out("Start");
+              sci1_str_out("Start ");
+              intToTime(time,string);
+              sci1_str_out(string);
+              sci1_str_out("\r\n");
             }
           }
         } else if(KeyPressed == 0xD || strstr(string,"mezi") != NULL){ //stisknut mezicas
           mezicas |= 1;
+          gpio_led_toggle(LED1);
           if(stream == 1){
-            sci1_str_out("Mezicas");
+            sci1_str_out("Mezicas ");
+            intToTime(time,string);
+            sci1_str_out(string);
+            sci1_str_out("\r\n");
           }
         } else if(KeyPressed == 0xE || strstr(string,"reset") != NULL){//stisknut reset
           if(stop == 1){
@@ -137,7 +173,10 @@ void stopkyFunction(char stream)
             rtm_ch_period_p(pCas,0);
             rtm_delay_p(pCas,0);
             if(stream == 1){
-              sci1_str_out("Restart");
+              sci1_str_out("Restart ");
+              intToTime(time,string);
+              sci1_str_out(string);
+              sci1_str_out("\r\n");
             }
           }else{
             RED10(0,0);
@@ -145,7 +184,7 @@ void stopkyFunction(char stream)
             stop = 0;
             mezicas = 0;
             if(stream == 1){
-              sci1_str_out("Konec");
+              sci1_str_out("Konec\r\n");
             }
             return;
           }
@@ -173,7 +212,58 @@ void intToTime(unsigned long t, char * string){
 
 void counter(void)
 {
+  pFun(0);
+  rtm_stop_p(pCounter);    
+}
+
+void counterFunction(char stream){
+  char string[20],znak;
+  int pozice = 0;
+  if(stream == 1){
+    do{
+      __RESET_WATCHDOG();
+      znak = sci1_in();
+      string[pozice++] = znak;
+      if(pozice> 19)
+        pozice = 0;
+    } while(znak != '#');
+    if(strToTime(string)){
+      sci1_str_out("Chybne zadani. Ukoncuji\n\r");
+    }
+  } else{
+    while(KeyPressed != 0xD){
+      __RESET_WATCHDOG();
     
+    }
+  
+  }
+  while(KeyPressed != 0xD)__RESET_WATCHDOG();
+  time = 0;
+  rtm_start_p(pCas,0,2);
+  while(1){
+  
+  }
+  
+}
+
+char strToTime(char *string){
+  long multiplier = 360000;
+  unsigned long t = 0;
+  int i = 0,decimal = 1;
+  while(i < 10){
+    if(string[i] < 48 || string[i] > 57)
+      return 1;
+    t += (string[i] - '0') * multiplier * decimal;
+    i++;
+    decimal = 1;
+    if(string[i] == ':' || string[i] == ','){
+      i++;
+      decimal = 10;
+      multiplier /= 60;
+    }
+  }
+  counterTo = t;
+  return 0;
 }
 
 void keyboard(void)
@@ -181,18 +271,20 @@ void keyboard(void)
   char string[25];
     while(1)
     {   __RESET_WATCHDOG();
-    intToTime(time,string);
+   strToTime("1:23:45,67");
         if(KeyPressed != 0xff && KeyPressed != tlac && KeyPressed > 9)
         {
             tlac = KeyPressed;
             switch(tlac)
             {
               case 0xC :
-                  time = 0; 
+                  time = 0;
+                  pFun = &stopkyFunction; 
                   rtm_start_p(pStopky,0,0);
                   //rtm_delay_p(pKeyboard,0);
               break;
               case 0xD : 
+                pFun = &counterFunction;
                 rtm_start_p(pCounter,0,0);
               break;
               case 0xE :
